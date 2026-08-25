@@ -1,0 +1,106 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+}
+
+
+.header {
+    margin-bottom: 35px;
+}
+
+.header h1 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.task-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.task-header h2 {
+    font-size: 22px;
+}
+
+
+.add-button {
+    text-decoration: none;
+    padding: 10px 15px;
+    font-size: 14px;
+}
+
+
+.todos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.todo {
+    background: white;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border-radius: 8px;
+}
+
+
+.todo-check {
+    flex-shrink: 0;
+}
+
+.checkbox {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+}
+
+
+.todo-title {
+    flex: 1;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.edit {
+    font-size: 14px;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+
+.delete {
+    font-size: 14px;
+    padding: 6px 10px;
+    cursor: pointer;
+}
+
+.empty {
+    text-align: center;
+    padding: 40px 20px;
+    font-size: 16px;
+    color: #777;
+}
+
+
+.completed-title {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 20px;
+}
