@@ -15,9 +15,10 @@ class TodosController extends Controller
     public function create(){
         return view('todos.create');
     }
-    public function store(Request $request){
+    public function store(Request $request)
+{
     $request->validate([
-        'title' => 'required|max:255',
+        'title' => 'required',
         'description' => 'nullable',
     ]);
 
@@ -26,13 +27,17 @@ class TodosController extends Controller
         'description' => $request->description,
     ]);
 
-    return redirect()->route('todos.index');
+    return redirect()
+        ->route('todos.index')
+        ->with('success', 'Todo added successfully!');
 }
    public function edit(Todo $todo){
     return view('todos.edit', compact('todo'));
+
    }
 
-   public function update(Request $request, Todo $todo){
+  public function update(Request $request, Todo $todo)
+{
     $request->validate([
         'title' => 'required|max:255',
         'description' => 'nullable',
@@ -43,23 +48,37 @@ class TodosController extends Controller
         'description' => $request->description,
     ]);
 
-    return redirect()->route('todos.index');
-   }
-
-  public function destroy(Todo $todo)
-{
-    $todo->delete();
-
-    return redirect()->route('todos.index');
+    return redirect()
+        ->route('todos.index')
+        ->with('success', 'Todo updated successfully!');
 }
+
 
 public function complete(Todo $todo)
 {
-    $todo->update([
-        'completed' => !$todo->completed,
-    ]);
+    if ($todo->completed) {
+        // Mark as pending
+        $todo->update([
+            'completed' => false,
+            'completed_at' => null,
+        ]);
+    } else {
+        // Mark as completed
+        $todo->update([
+            'completed' => true,
+            'completed_at' => now(),
+        ]);
+    }
 
     return redirect()->route('todos.index');
+}
+public function destroy(Todo $todo)
+{
+    $todo->delete();
+
+    return redirect()
+        ->route('todos.index')
+        ->with('success', 'Todo deleted successfully.');
 }
 
 }
