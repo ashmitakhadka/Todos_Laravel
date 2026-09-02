@@ -3,28 +3,31 @@
 namespace App\Http\Controllers;
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TodosController extends Controller
 {
     public function index()
-    {
-        $todos = Todo::all(); // Fetch todos from database
-        
-        return view('todos.index', compact('todos')); // Pass to view
-    }
-    public function create(){
-        return view('todos.create');
-    }
-    public function store(Request $request)
 {
-    $request->validate([
-        'title' => 'required',
-        'description' => 'nullable',
+    $todos = Todo::where('user_id', Auth::id())->get();
+
+    return view('todos.index', compact('todos'));
+}
+    public function create()
+{
+    return view('todos.create');
+}
+
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'title' => ['required', 'string', 'max:255'],
+        'description' => ['nullable', 'string'],
     ]);
 
-    Todo::create([
-        'title' => $request->title,
-        'description' => $request->description,
+    $request->user()->todos()->create([
+        'title' => $validated['title'],
+        'description' => $validated['description'] ?? null,
     ]);
 
     return redirect()
@@ -36,7 +39,7 @@ class TodosController extends Controller
 
    }
 
-  public function update(Request $request, Todo $todo)
+ public function update(Request $request, Todo $todo)
 {
     $request->validate([
         'title' => 'required|max:255',

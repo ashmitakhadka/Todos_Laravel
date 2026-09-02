@@ -4,41 +4,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>Todo App</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
 <body class="bg-gray-50 min-h-screen">
 
+    <!-- Toast Component -->
+    <x-toast />
+
+    <!-- Toast Data -->
+    <div
+        id="toast-data"
+        data-success="{{ session('success') }}"
+        data-error="{{ session('error') }}"
+    ></div>
+
+
     <!-- Page Header -->
-    <header class="bg-white py-6 shadow-sm text-center mb-8">
-        <h1 class="text-3xl font-bold text-slate-900">
-            Todo App
-        </h1>
+    <header class="bg-white py-6 shadow-sm mb-8">
+
+        <div class="max-w-2xl mx-auto px-4 flex items-center justify-between">
+
+            <h1 class="text-3xl font-bold text-slate-900">
+                Todo App
+            </h1>
+
+            <!-- Logout Button -->
+            <button
+                id="logoutBtn"
+                type="button"
+                class="inline-flex items-center gap-2 bg-red-500 hover:bg-red-600
+                       text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition"
+            >
+                <i class="fa-solid fa-right-from-bracket"></i>
+                <span>Logout</span>
+            </button>
+
+        </div>
+
     </header>
 
 
     <!-- Main Centered Container -->
     <main class="max-w-2xl mx-auto px-4 pb-12">
 
-        <!-- Success Message -->
-        @if (session('success'))
-            <div
-                id="success-message"
-                class="max-w-[600px] mx-auto mb-5 px-4 py-3 bg-green-100 text-green-700 rounded-[10px] text-center font-medium transition-opacity duration-500"
-            >
-                {{ session('success') }}
-            </div>
-        @endif
 
-
-        <!-- Top Card: Title + Add Button -->
+        <!-- Top Card -->
         <div class="flex items-center justify-between bg-gray-100 p-6 rounded-2xl mb-6 shadow-sm">
 
             <div>
+
                 <h2 class="text-xl font-bold text-gray-800">
                     My Tasks
                 </h2>
@@ -47,13 +70,15 @@
                     {{ count($todos) }}
                     {{ count($todos) == 1 ? 'task' : 'tasks' }}
                 </p>
+
             </div>
 
 
             <!-- Add Task -->
             <a
                 href="{{ route('todos.create') }}"
-                class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition"
+                class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600
+                       text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition"
             >
                 <i class="fa-solid fa-plus"></i>
                 <span>Add Task</span>
@@ -62,14 +87,16 @@
         </div>
 
 
-        <!-- Task List Container -->
+        <!-- Task List -->
         <div class="space-y-3">
 
             @forelse($todos as $todo)
 
                 <!-- Todo Card -->
-                <div class="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
-
+                <div
+                    class="flex items-center justify-between bg-white p-4 rounded-2xl
+                           border border-gray-100 shadow-sm hover:shadow-md transition"
+                >
 
                     <!-- Checkbox + Todo Information -->
                     <div class="flex items-center gap-4">
@@ -79,6 +106,7 @@
                             action="{{ route('todos.complete', $todo) }}"
                             method="POST"
                         >
+
                             @csrf
                             @method('PATCH')
 
@@ -145,13 +173,13 @@
                     <!-- Actions -->
                     <div class="flex items-center gap-2">
 
-
                         <!-- Edit -->
                         @if(!$todo->completed)
 
                             <a
                                 href="{{ route('todos.edit', $todo) }}"
-                                class="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition"
+                                class="p-2 text-gray-400 hover:text-blue-600
+                                       hover:bg-blue-50 rounded-lg transition"
                                 title="Edit task"
                             >
                                 <i class="fa-solid fa-pen"></i>
@@ -178,12 +206,14 @@
                             method="POST"
                             onsubmit="return confirm('Are you sure you want to delete this task?');"
                         >
+
                             @csrf
                             @method('DELETE')
 
                             <button
                                 type="submit"
-                                class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                                class="p-2 text-gray-400 hover:text-red-600
+                                       hover:bg-red-50 rounded-lg transition"
                                 title="Delete task"
                             >
                                 <i class="fa-solid fa-trash"></i>
@@ -199,7 +229,10 @@
             @empty
 
                 <!-- No Tasks -->
-                <div class="text-center py-12 px-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                <div
+                    class="text-center py-12 px-4 bg-gray-50 rounded-2xl
+                           border-2 border-dashed border-gray-200"
+                >
 
                     <i class="fa-regular fa-clipboard text-4xl text-gray-400 mb-3"></i>
 
@@ -213,7 +246,8 @@
 
                     <a
                         href="{{ route('todos.create') }}"
-                        class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-xl text-sm transition"
+                        class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600
+                               text-white font-semibold py-2 px-4 rounded-xl text-sm transition"
                     >
                         <i class="fa-solid fa-plus"></i>
                         <span>Add Your First Task</span>
@@ -228,30 +262,123 @@
     </main>
 
 
-    <!-- Success Message Auto Hide -->
+    <!-- JavaScript -->
     <script>
+
         document.addEventListener('DOMContentLoaded', function () {
 
-            const message = document.getElementById('success-message');
+            /*
+            |--------------------------------------------------------------------------
+            | Toast Messages
+            |--------------------------------------------------------------------------
+            */
 
-            if (message) {
+            const toastData = document.getElementById('toast-data');
 
-                // Wait 10 seconds
-                setTimeout(function () {
+            const successMessage = toastData.dataset.success;
+            const errorMessage = toastData.dataset.error;
 
-                    // Fade out
-                    message.classList.add('opacity-0');
 
-                    // Remove from page after fade
-                    setTimeout(function () {
-                        message.remove();
-                    }, 500);
+            if (successMessage) {
 
-                }, 10000);
+                showToast(
+                    successMessage,
+                    'success'
+                );
+
+            }
+
+
+            if (errorMessage) {
+
+                showToast(
+                    errorMessage,
+                    'error'
+                );
+
+            }
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Logout
+            |--------------------------------------------------------------------------
+            */
+
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            if (logoutBtn) {
+
+                logoutBtn.addEventListener('click', async function () {
+
+                    logoutBtn.disabled = true;
+
+                    try {
+
+                        const csrfToken = document
+                            .querySelector('meta[name="csrf-token"]')
+                            .getAttribute('content');
+
+
+                        const response = await fetch('/api/logout', {
+
+                            method: 'POST',
+
+                            credentials: 'same-origin',
+
+                            headers: {
+                                'Accept': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken
+                            }
+
+                        });
+
+
+                        const data = await response.json();
+
+
+                        if (response.ok) {
+
+                            showToast(
+                                data.message || 'Logout successful.',
+                                'success'
+                            );
+
+
+                            setTimeout(function () {
+
+                                window.location.href = '/login';
+
+                            }, 700);
+
+                        } else {
+
+                            showToast(
+                                data.message || 'Logout failed.',
+                                'error'
+                            );
+
+                            logoutBtn.disabled = false;
+
+                        }
+
+                    } catch (error) {
+
+                        showToast(
+                            'Something went wrong. Please try again.',
+                            'error'
+                        );
+
+                        logoutBtn.disabled = false;
+
+                    }
+
+                });
 
             }
 
         });
+
     </script>
 
 </body>

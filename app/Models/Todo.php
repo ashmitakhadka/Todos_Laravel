@@ -10,14 +10,20 @@ class Todo extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'title',
-        'description',
-        'completed',
-        'completed_at',
-    ];
+    'user_id',
+    'title',
+    'description',
+    'completed',
+    'completed_at',
+];
 
     protected $casts = [
         'completed' => 'boolean',
         'completed_at' => 'datetime',
     ];
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
 }
