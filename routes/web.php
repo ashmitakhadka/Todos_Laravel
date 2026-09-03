@@ -1,10 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 
 use App\Http\Controllers\TodosController;
+use App\Http\Controllers\PasswordResetController;
 
 
 // =========================
@@ -24,7 +23,6 @@ Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
 
-
 Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
@@ -34,36 +32,40 @@ Route::get('/login', function () {
 // Forgot Password
 // =========================
 
-// Show Forgot Password Page
-Route::get('/forgot-password', function () {
-    return view('auth.forgot-password');
-})->middleware('guest')->name('password.request');
+// Show forgot password form
+Route::get(
+    '/forgot-password',
+    [PasswordResetController::class, 'showForgotPassword']
+)
+    ->middleware('guest')
+    ->name('password.request');
 
 
-// Send Password Reset Link
-Route::post('/forgot-password', function (Request $request) {
+// Process forgot password form
+Route::post(
+    '/forgot-password',
+    [PasswordResetController::class, 'sendResetLink']
+)
+    ->middleware('guest')
+    ->name('password.email');
 
-    $request->validate([
-        'email' => ['required', 'email'],
-    ]);
 
-    $status = Password::sendResetLink(
-        $request->only('email')
-    );
+// Show new password form
+Route::get(
+    '/password-reset/{token}',
+    [PasswordResetController::class, 'resetPassword']
+)
+    ->middleware('guest')
+    ->name('reset.password');
 
-    if ($status === Password::ResetLinkSent) {
 
-        return back()->with(
-            'success',
-            'Password reset link sent to your email.'
-        );
-    }
-
-    return back()->withErrors([
-        'email' => __($status),
-    ]);
-
-})->middleware('guest')->name('password.email');
+// Process new password form
+Route::post(
+    '/password-reset',
+    [PasswordResetController::class, 'resetPasswordPost']
+)
+    ->middleware('guest')
+    ->name('reset.password.post');
 
 
 // =========================
