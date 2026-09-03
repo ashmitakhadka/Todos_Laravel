@@ -19,44 +19,52 @@ class PasswordResetController extends Controller
 
     public function sendResetLink(Request $request)
     {
-    $request->validate([
-        'email' => ['required', 'email', 'exists:users,email'],
-    ]);
+      
+        $request->validate([
+            'email' => ['required', 'email', 'exists:users,email'],
+        ]);
 
-    $token = Str::random(64);
+        $token = Str::random(64);
 
-    DB::table('password_reset_tokens')->updateOrInsert(
-        [
-            'email' => $request->email,
-        ],
-        [
-            'token' => $token,
-            'created_at' => Carbon::now(),
-        ]
-    );
+        DB::table('password_reset_tokens')->updateOrInsert(
+            [
+                'email' => $request->email,
+            ],
+            [
+                'token' => $token,
+                'created_at' => Carbon::now(),
+            ]
+        );
 
-  // Create reset URL
-    $resetUrl = url( '/password-reset/' . $token .'?email=' .urlencode($request->email));
+        $resetUrl = url(
+            '/password-reset/' .
+            $token .
+            '?email=' .
+            urlencode($request->email)
+        );
 
-// Send HTML email
-Mail::send(
-    'email.password-reset', [
-        'token' => $token,
-        'email' => $request->email,
-        'resetUrl' => $resetUrl,
-    ],
-    function ($message) use ($request) {
-        $message->to($request->email);
-        $message->subject('Reset Password');
+
+        Mail::send(
+            'email.password-reset',
+            [
+                'token' => $token,
+                'email' => $request->email,
+                'resetUrl' => $resetUrl,
+            ],
+            function ($message) use ($request) {
+                $message->to($request->email);
+                $message->subject('Reset Password');
+            }
+        );
+
+        return redirect()
+            ->route('password.request')
+            ->with(
+                'success',
+                'Email has been sent successfully!'
+            );
     }
-);
-return redirect()
-    ->route('password.request')
-    ->with(
-        'success',
-        'Email has been sent successfully!'
-    );
-}
+
 
     public function resetPassword(Request $request, $token)
     {
@@ -66,16 +74,15 @@ return redirect()
         ]);
     }
 
-
-    // ==========================================
-    // Update Password
-    // ==========================================
-
     public function resetPasswordPost(Request $request)
     {
-        // Validate
+
         $request->validate([
-            'email' => ['required', 'email', 'exists:users,email'],
+            'email' => [
+                'required',
+                'email',
+                'exists:users,email'
+            ],
 
             'password' => [
                 'required',
@@ -84,18 +91,18 @@ return redirect()
                 'confirmed',
             ],
 
-            'token' => ['required'],
+            'token' => [
+                'required'
+            ],
         ]);
 
 
-        // Find token
         $resetData = DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->where('token', $request->token)
             ->first();
 
 
-        // Token doesn't exist
         if (!$resetData) {
 
             return redirect()
@@ -107,13 +114,11 @@ return redirect()
         }
 
 
-        // Check token expiration
         if (
             Carbon::parse($resetData->created_at)
                 ->addMinutes(60)
                 ->isPast()
         ) {
-
             DB::table('password_reset_tokens')
                 ->where('email', $request->email)
                 ->delete();
@@ -127,20 +132,18 @@ return redirect()
         }
 
 
-        // Update password
-        $user = User::where('email', $request->email)->first();
+        $user = User::where(
+            'email',
+            $request->email
+        )->first();
 
         $user->password = $request->password;
         $user->save();
 
-
-        // Delete used token
         DB::table('password_reset_tokens')
             ->where('email', $request->email)
             ->delete();
 
-
-        // Redirect to login
         return redirect()
             ->route('login')
             ->with(
