@@ -7,16 +7,33 @@ use Illuminate\Support\Facades\Auth;
 
 class TodosController extends Controller
 {
-    public function index()
-{
-    $todos = Todo::where('user_id', Auth::id())->get();
+    public function index(Request $request){
+    
+    $search = $request->input('q');
+    $status = $request->input('status');
+    $order = $request->input('order');
 
+    $todos = $request->user()->todos();
+
+    if($search){
+        $todos = $todos->search($search);
+    }
+    if($status){
+         $todos = $todos->status($status);
+    }
+
+    if($order){
+         $todos = $order->order($order);
+    }
+
+    $todos = $todos-> paginate(4);
     return view('todos.index', compact('todos'));
-}
-    public function create()
-{
-    return view('todos.create');
-}
+     
+    }
+
+    public function create(){
+        return view('todos.create');
+    }
 
 public function store(Request $request)
 {
@@ -60,21 +77,21 @@ public function store(Request $request)
 public function complete(Todo $todo)
 {
     if ($todo->completed) {
-        // Mark as pending
-        $todo->update([
-            'completed' => false,
-            'completed_at' => null,
-        ]);
-    } else {
-        // Mark as completed
-        $todo->update([
-            'completed' => true,
-            'completed_at' => now(),
-        ]);
+        return redirect()
+            ->route('todos.index')
+            ->with('error', 'This task is already completed.');
     }
 
-    return redirect()->route('todos.index');
+    $todo->update([
+        'completed' => true,
+        'completed_at' => now(),
+    ]);
+
+    return redirect()
+        ->route('todos.index')
+        ->with('success', 'Todo completed successfully!');
 }
+
 public function destroy(Todo $todo)
 {
     $todo->delete();

@@ -13,7 +13,7 @@
             success: {
                 icon: "✓",
                 title: "Success",
-                color: "border-green- 500",
+                color: "border-green-500",
                 iconBg: "bg-green-500",
             },
 

@@ -26,4 +26,33 @@ class Todo extends Model
 {
     return $this->belongsTo(User::class);
 }
+
+ public function scopeSearch($q, $term)
+{
+    $q->where(function ($query) use ($term) {
+        $query->where('title', 'like', '%' . $term . '%')
+              ->orWhere('description', 'like', '%' . $term . '%');
+    });
+
+    return $q;
+}
+
+public function scopeStatus($q, $status){
+    if ($status === 'active') {
+          $q->where('completed', false);
+       }
+
+    if ($status === 'completed') {
+      $q->where('completed', true);
+      }
+}
+
+public function scopeOrdered($q, $order){
+    if($order== 'latest'){
+        $q->orderBy('completed_at', 'desc');
+    }
+     if($order== 'oldest'){
+        $q->orderBy('created_at', 'asc');
+    }
+}
 }

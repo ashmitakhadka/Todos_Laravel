@@ -33,36 +33,26 @@ Route::get('/login', function () {
 // =========================
 
 // Show forgot password form
-Route::get(
-    '/forgot-password',
-    [PasswordResetController::class, 'showForgotPassword']
-)
+Route::get( '/forgot-password', [PasswordResetController::class, 'showForgotPassword'])
     ->middleware('guest')
     ->name('password.request');
 
 
 // Process forgot password form
-Route::post(
-    '/forgot-password',
-    [PasswordResetController::class, 'sendResetLink']
-)
-    ->middleware('guest')
-    ->name('password.email');
+Route::post( '/forgot-password', [PasswordResetController::class, 'sendResetLink']
+) ->middleware('guest')
+ ->name('password.email');
 
 
 // Show new password form
-Route::get(
-    '/password-reset/{token}',
-    [PasswordResetController::class, 'resetPassword']
+Route::get('/password-reset/{token}', [PasswordResetController::class, 'resetPassword']
 )
     ->middleware('guest')
     ->name('reset.password');
 
 
 // Process new password form
-Route::post(
-    '/password-reset',
-    [PasswordResetController::class, 'resetPasswordPost']
+Route::post('/password-reset',[PasswordResetController::class, 'resetPasswordPost']
 )
     ->middleware('guest')
     ->name('reset.password.post');
