@@ -91,7 +91,7 @@ public function complete(Todo $todo)
         ->route('todos.index')
         ->with('success', 'Todo completed successfully!');
 }
-
+    
 public function destroy(Todo $todo)
 {
     $todo->delete();

@@ -6,6 +6,7 @@ use App\Http\Controllers\TodosController;
 use App\Http\Controllers\PasswordResetController;
 
 
+
 // =========================
 // Welcome
 // =========================
@@ -85,3 +86,5 @@ Route::middleware('auth')->group(function () {
     Route::patch('/todos/{todo}/complete', [TodosController::class, 'complete'])
         ->name('todos.complete');
 });
+
+Route::livewire('/livewire/tasks', 'pages::tasks.index');
