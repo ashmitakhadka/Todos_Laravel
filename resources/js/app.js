@@ -1,4 +1,3 @@
-//
 import "@fortawesome/fontawesome-free/js/all.js";
 import "./login";
 import Swal from 'sweetalert2';
@@ -24,92 +23,113 @@ document.querySelectorAll('.delete-form').forEach((form) => {
     });
 });
 
-        document.addEventListener('DOMContentLoaded', function () {
 
-            /*
-            |--------------------------------------------------------------------------
-            | Toast Messages
-            |--------------------------------------------------------------------------
-            */
+document.addEventListener('DOMContentLoaded', function () {
 
-            const toastData = document.getElementById('toast-data');
+    /*
+    |--------------------------------------------------------------------------
+    | Toast Messages
+    |--------------------------------------------------------------------------
+    */
 
-            const successMessage = toastData.dataset.success;
-            const errorMessage = toastData.dataset.error;
+    const toastData = document.getElementById('toast-data');
+
+    if (toastData) {
+
+        const successMessage = toastData.dataset.success;
+        const errorMessage = toastData.dataset.error;
+
+        if (successMessage) {
+
+            showToast(
+                successMessage,
+                'success'
+            );
+
+        }
+
+        if (errorMessage) {
+
+            showToast(
+                errorMessage,
+                'error'
+            );
+
+        }
+
+    }
 
 
-            if (successMessage) {
+    /*
+    |--------------------------------------------------------------------------
+    | Logout
+    |--------------------------------------------------------------------------
+    */
 
-                showToast(
-                    successMessage,
-                    'success'
-                );
+    const logoutBtn = document.getElementById('logoutBtn');
 
-            }
+    if (logoutBtn) {
 
-            if (errorMessage) {
+        logoutBtn.addEventListener('click', async function () {
 
-                showToast(
-                    errorMessage,
-                    'error'
-                );
+            logoutBtn.disabled = true;
 
-            }
+            try {
 
-            const logoutBtn = document.getElementById('logoutBtn');
+                const csrfToken = document
+                    .querySelector('meta[name="csrf-token"]')
+                    .getAttribute('content');
 
-            if (logoutBtn) {
+                const response = await fetch('/api/logout', {
 
-                logoutBtn.addEventListener('click', async function () {
+                    method: 'POST',
 
-                    logoutBtn.disabled = true;
+                    credentials: 'same-origin',
 
-                    try {
-
-                        const csrfToken = document
-                            .querySelector('meta[name="csrf-token"]')
-                            .getAttribute('content');
-                        const response = await fetch('/api/logout', {
-
-                            method: 'POST',
-
-                            credentials: 'same-origin',
-
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-CSRF-TOKEN': csrfToken
-                            }
-                        });
-                        const data = await response.json();
-                        if (response.ok) {
-                            showToast(
-                                data.message || 'Logout successful.',
-                                'success'
-                            );
-                           setTimeout(function () {
-                                window.location.href = '/login';
-                            }, 700);
-                        } else {
-                            showToast(
-                                data.message || 'Logout failed.',
-                                'error'
-                            );
-                            logoutBtn.disabled = false;
-                        }
-
-                    } catch (error) {
-
-                        showToast(
-                            'Something went wrong. Please try again.',
-                            'error'
-                        );
-
-                        logoutBtn.disabled = false;
-
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
                     }
 
                 });
 
+                const data = await response.json();
+
+                if (response.ok) {
+
+                    showToast(
+                        data.message || 'Logout successful.',
+                        'success'
+                    );
+
+                    setTimeout(function () {
+                        window.location.href = '/login';
+                    }, 700);
+
+                } else {
+
+                    showToast(
+                        data.message || 'Logout failed.',
+                        'error'
+                    );
+
+                    logoutBtn.disabled = false;
+
+                }
+
+            } catch (error) {
+
+                showToast(
+                    'Something went wrong. Please try again.',
+                    'error'
+                );
+
+                logoutBtn.disabled = false;
+
             }
 
         });
+
+    }
+
+});

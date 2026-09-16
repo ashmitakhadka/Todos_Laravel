@@ -87,4 +87,14 @@ Route::middleware('auth')->group(function () {
         ->name('todos.complete');
 });
 
-Route::livewire('/livewire/tasks', 'pages::tasks.index');
+Route::middleware('auth')->group(function () {
+
+    Route::livewire('/livewire/tasks', 'pages::tasks.index')
+        ->name('livewire.tasks.index');
+
+    Route::livewire('/livewire/tasks/create', 'pages::tasks.create')
+        ->name('livewire.tasks.create');
+
+    Route::livewire('/livewire/tasks/{todo}/edit', 'pages::tasks.edit')
+        ->name('livewire.tasks.edit');
+});

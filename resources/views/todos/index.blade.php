@@ -54,16 +54,19 @@
 
 
                 <!-- Logout -->
-                <button id="logoutBtn" type="button"
-                    class="inline-flex items-center gap-2 bg-red-500
-                           hover:bg-red-600 text-white font-semibold
-                           py-2.5 px-4 rounded-xl text-sm transition">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
 
-                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <button type="submit"
+                        class="inline-flex items-center gap-2 bg-red-500
+                                 hover:bg-red-600 text-white font-semibold py-2.5 px-4 rounded-xl text-sm transition">
 
-                    <span>Logout</span>
+                        <i class="fa-solid fa-right-from-bracket"></i>
 
-                </button>
+                        <span>Logout</span>
+
+                    </button>
+                </form>
 
             </div>
 

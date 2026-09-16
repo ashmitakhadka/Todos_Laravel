@@ -11,7 +11,8 @@ Route::middleware('web')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 
     // Logout
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])
+    ->name('logout');
 
     // Authenticated API
     Route::middleware('auth:sanctum')->group(function () {
