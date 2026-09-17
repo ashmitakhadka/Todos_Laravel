@@ -2,6 +2,8 @@ import "@fortawesome/fontawesome-free/js/all.js";
 import "./login";
 import Swal from 'sweetalert2';
 
+window.Swal = Swal;
+
 document.querySelectorAll('.delete-form').forEach((form) => {
     form.addEventListener('submit', (event) => {
         event.preventDefault();

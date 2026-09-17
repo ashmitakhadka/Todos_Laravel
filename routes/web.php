@@ -97,4 +97,6 @@ Route::middleware('auth')->group(function () {
 
     Route::livewire('/livewire/tasks/{todo}/edit', 'pages::tasks.edit')
         ->name('livewire.tasks.edit');
+     Route::livewire('/livewire/tasks/{todo}', 'pages::tasks.show')
+        ->name('livewire.tasks.show');
 });
