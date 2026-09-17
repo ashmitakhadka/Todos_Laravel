@@ -53,6 +53,8 @@ new class extends Component {
     {
         $todo = Auth::user()->todos()->findOrFail($id);
 
+        $this->authorize('update', $todo);
+
         if ($todo->completed) {
             return;
         }
@@ -69,9 +71,21 @@ new class extends Component {
     {
         $todo = Auth::user()->todos()->findOrFail($id);
 
+        $this->authorize('delete', $todo);
+
         $todo->delete();
 
         $this->dispatch('todo-deleted', message: 'Todo deleted successfully');
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        $this->redirect('/livewire/login');
     }
 };
 ?>
@@ -107,20 +121,17 @@ new class extends Component {
                     </div>
                 </form>
 
-                <!-- Logout -->
-                <form method="POST" action="{{ route('logout') }}">
-
-                    @csrf
-
-                    <button type="submit"
+                <form wire:submit="logout">
+                    <button type="submit" wire:loading.attr="disabled"
                         class="flex h-11 items-center gap-2 rounded-lg px-4 text-sm font-semibold text-rose-600
-                           transition hover:bg-rose-50">
+                         transition hover:bg-rose-50 disabled:opacity-60">
 
                         <i class="fa-solid fa-right-from-bracket"></i>
-                        <span>Log out</span>
+
+                        <span wire:loading.remove>Log out</span>
+                        <span wire:loading>Logging out...</span>
 
                     </button>
-
                 </form>
 
             </div>

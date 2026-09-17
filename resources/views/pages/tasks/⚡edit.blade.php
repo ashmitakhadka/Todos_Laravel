@@ -21,6 +21,7 @@ new class extends Component {
             'title' => 'required',
             'description' => 'nullable',
         ]);
+        $this->authorize('update', $this->todo);
 
         $this->todo->update([
             'title' => $this->title,

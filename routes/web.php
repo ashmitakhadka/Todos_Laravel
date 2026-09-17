@@ -100,3 +100,21 @@ Route::middleware('auth')->group(function () {
      Route::livewire('/livewire/tasks/{todo}', 'pages::tasks.show')
         ->name('livewire.tasks.show');
 });
+
+Route::middleware('guest')->group(function () {
+
+    Route::livewire('/livewire/register', 'pages::auth.register')
+        ->name('livewire.register');
+
+    Route::livewire('/livewire/login', 'pages::auth.login')
+        ->name('livewire.login');
+
+    Route::livewire('/livewire/forgot-password', 'pages::auth.forgot-password')
+        ->name('livewire.password.request');
+
+    Route::livewire(
+        '/livewire/password-reset/{token}',
+        'pages::auth.password-reset'
+    )->name('livewire.password.reset');
+
+});
