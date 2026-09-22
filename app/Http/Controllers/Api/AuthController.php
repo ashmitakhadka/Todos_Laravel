@@ -70,9 +70,9 @@ class AuthController extends Controller
                 'min:6',
             ],
         ]);
+         $remember = $request->boolean('remember');
 
-
-        if (!Auth::attempt($credentials)) {
+        if (!Auth::attempt($credentials,  $remember)) {
 
             return response()->json([
                 'message' => 'Invalid email or password.'

@@ -1,8 +1,10 @@
+
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
     const emailInput = document.getElementById("email");
     const passwordInput = document.getElementById("password");
+    const rememberInput = document.getElementById("remember");
 
     const emailError = document.getElementById("emailError");
     const passwordError = document.getElementById("passwordError");
@@ -147,6 +149,9 @@ if (loginForm) {
             loginButton.disabled = true;
             loginButton.textContent = "Logging in...";
 
+            // Get Remember Me value when the form is submitted
+            const remember = rememberInput.checked;
+
             const response = await fetch("/api/login", {
                 method: "POST",
 
@@ -164,6 +169,7 @@ if (loginForm) {
                 body: JSON.stringify({
                     email: emailInput.value.trim(),
                     password: passwordInput.value,
+                    remember: remember,
                 }),
             });
 
