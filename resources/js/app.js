@@ -2,6 +2,7 @@ import "@fortawesome/fontawesome-free/js/all.js";
 
 import "./login";
 import "./register";
+import "./livewire-login";
 
 import Swal from "sweetalert2";
 

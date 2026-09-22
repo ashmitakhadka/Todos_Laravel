@@ -11,15 +11,20 @@ new class extends Component {
     #[Validate('required|min:6')]
     public $password = '';
 
+    public $remember = false;
+
     public function login()
     {
         $this->validate();
 
         if (
-            !Auth::attempt([
-                'email' => $this->email,
-                'password' => $this->password,
-            ])
+            !Auth::attempt(
+                [
+                    'email' => $this->email,
+                    'password' => $this->password,
+                ],
+                $this->remember,
+            )
         ) {
             $this->addError('email', 'The email or password is incorrect.');
 
@@ -31,6 +36,15 @@ new class extends Component {
         session()->flash('success', 'Login successful!');
 
         $this->redirect('/livewire/tasks');
+    }
+    public function updatedEmail()
+    {
+        $this->validateOnly('email');
+    }
+
+    public function updatedPassword()
+    {
+        $this->validateOnly('password');
     }
 };
 ?>
@@ -67,7 +81,7 @@ new class extends Component {
                         Email
                     </label>
 
-                    <input type="email" id="email" wire:model="email" placeholder="Enter your email"
+                    <input type="email" id="email" wire:model.live="email" placeholder="Enter your email"
                         autocomplete="email"
                         class="w-full border border-gray-300 rounded-xl px-4 py-2.5
                                text-sm outline-none
@@ -90,18 +104,46 @@ new class extends Component {
                         Password
                     </label>
 
-                    <input type="password" id="password" wire:model="password" placeholder="Enter your password"
-                        autocomplete="current-password"
-                        class="w-full border border-gray-300 rounded-xl px-4 py-2.5
-                               text-sm outline-none
-                               focus:border-blue-500 focus:ring-2 focus:ring-blue-100
-                               transition">
+                    <div class="relative">
+
+                        <input type="password" id="password" wire:model.live="password"
+                            placeholder="Enter your password" autocomplete="current-password"
+                            class="w-full border border-gray-300 rounded-xl px-4 py-2.5 pr-12
+                                   text-sm outline-none
+                                   focus:border-blue-500 focus:ring-2 focus:ring-blue-100
+                                   transition">
+
+                        <button type="button" id="togglePassword"
+                            class="absolute right-3 top-1/2 -translate-y-1/2
+                                   text-gray-500 hover:text-gray-700">
+                            <i id="passwordIcon" class="fa-solid fa-eye-slash"></i>
+                        </button>
+
+                    </div>
 
                     @error('password')
                         <p class="text-red-500 text-xs mt-1">
                             {{ $message }}
                         </p>
                     @enderror
+
+                </div>
+
+
+                <!-- Remember Me -->
+                <div class="flex items-center justify-between">
+
+                    <label class="flex items-center gap-2 text-sm text-gray-600">
+
+                        <input type="checkbox" wire:model="remember"
+                            class="rounded border-gray-300
+                                   text-blue-500 focus:ring-blue-500">
+
+                        <span>
+                            Remember me
+                        </span>
+
+                    </label>
 
                 </div>
 
