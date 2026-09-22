@@ -17,9 +17,60 @@ if (registerForm) {
 
     const registerButton = document.getElementById("registerButton");
 
-    // -----------------------------
-    // Show error
-    // -----------------------------
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordIcon = document.getElementById("passwordIcon");
+
+    const togglePasswordConfirmation = document.getElementById(
+        "togglePasswordConfirmation",
+    );
+    const passwordConfirmationIcon = document.getElementById(
+        "passwordConfirmationIcon",
+    );
+
+   // =========================
+// Show / Hide Password
+// =========================
+
+togglePassword.addEventListener("click", function () {
+    if (passwordInput.type === "password") {
+        // Show password
+        passwordInput.type = "text";
+
+        passwordIcon.classList.remove("fa-eye-slash");
+        passwordIcon.classList.add("fa-eye");
+    } else {
+        // Hide password
+        passwordInput.type = "password";
+
+        passwordIcon.classList.remove("fa-eye");
+        passwordIcon.classList.add("fa-eye-slash");
+    }
+});
+
+
+// =========================
+// Show / Hide Confirm Password
+// =========================
+
+togglePasswordConfirmation.addEventListener("click", function () {
+    if (passwordConfirmationInput.type === "password") {
+        // Show password
+        passwordConfirmationInput.type = "text";
+
+        passwordConfirmationIcon.classList.remove("fa-eye-slash");
+        passwordConfirmationIcon.classList.add("fa-eye");
+    } else {
+        // Hide password
+        passwordConfirmationInput.type = "password";
+
+        passwordConfirmationIcon.classList.remove("fa-eye");
+        passwordConfirmationIcon.classList.add("fa-eye-slash");
+    }
+});
+
+    // =========================
+    // Show Error
+    // =========================
 
     function showError(input, errorElement, message) {
         errorElement.textContent = message;
@@ -29,9 +80,9 @@ if (registerForm) {
         input.classList.add("border-red-500");
     }
 
-    // -----------------------------
-    // Clear error
-    // -----------------------------
+    // =========================
+    // Clear Error
+    // =========================
 
     function clearError(input, errorElement) {
         errorElement.textContent = "";
@@ -41,9 +92,9 @@ if (registerForm) {
         input.classList.add("border-gray-300");
     }
 
-    // -----------------------------
-    // Name validation
-    // -----------------------------
+    // =========================
+    // Name Validation
+    // =========================
 
     function validateName() {
         const name = nameInput.value.trim();
@@ -69,9 +120,9 @@ if (registerForm) {
         return true;
     }
 
-    // -----------------------------
-    // Email validation
-    // -----------------------------
+    // =========================
+    // Email Validation
+    // =========================
 
     function validateEmail() {
         const email = emailInput.value.trim();
@@ -99,9 +150,9 @@ if (registerForm) {
         return true;
     }
 
-    // -----------------------------
-    // Password validation
-    // -----------------------------
+    // =========================
+    // Password Validation
+    // =========================
 
     function validatePassword() {
         const password = passwordInput.value;
@@ -127,9 +178,9 @@ if (registerForm) {
         return true;
     }
 
-    // -----------------------------
-    // Confirm password validation
-    // -----------------------------
+    // =========================
+    // Confirm Password Validation
+    // =========================
 
     function validatePasswordConfirmation() {
         const password = passwordInput.value;
@@ -155,20 +206,27 @@ if (registerForm) {
             return false;
         }
 
-        clearError(passwordConfirmationInput, passwordConfirmationError);
+        clearError(
+            passwordConfirmationInput,
+            passwordConfirmationError,
+        );
 
         return true;
     }
 
-    // -----------------------------
-    // Dynamic validation
-    // -----------------------------
+    // =========================
+    // Dynamic Validation
+    // =========================
 
-    nameInput.addEventListener("input", validateName);
+    nameInput.addEventListener("input", function () {
+        validateName();
+    });
 
-    emailInput.addEventListener("input", validateEmail);
+    emailInput.addEventListener("input", function () {
+        validateEmail();
+    });
 
-    passwordInput.addEventListener("input", () => {
+    passwordInput.addEventListener("input", function () {
         validatePassword();
 
         // Re-check confirmation when password changes
@@ -179,12 +237,14 @@ if (registerForm) {
 
     passwordConfirmationInput.addEventListener(
         "input",
-        validatePasswordConfirmation,
+        function () {
+            validatePasswordConfirmation();
+        },
     );
 
-    // -----------------------------
+    // =========================
     // Submit
-    // -----------------------------
+    // =========================
 
     registerForm.addEventListener("submit", async function (e) {
         e.preventDefault();
@@ -196,7 +256,12 @@ if (registerForm) {
         const passwordValid = validatePassword();
         const confirmationValid = validatePasswordConfirmation();
 
-        if (!nameValid || !emailValid || !passwordValid || !confirmationValid) {
+        if (
+            !nameValid ||
+            !emailValid ||
+            !passwordValid ||
+            !confirmationValid
+        ) {
             return;
         }
 
@@ -226,24 +291,33 @@ if (registerForm) {
 
                     password: passwordInput.value,
 
-                    password_confirmation: passwordConfirmationInput.value,
+                    password_confirmation:
+                        passwordConfirmationInput.value,
                 }),
             });
 
             const data = await response.json();
 
-            // -----------------------------
-            // Laravel validation errors
-            // -----------------------------
+            // =========================
+            // Laravel Validation Errors
+            // =========================
 
             if (response.status === 422) {
                 if (data.errors) {
                     if (data.errors.name) {
-                        showError(nameInput, nameError, data.errors.name[0]);
+                        showError(
+                            nameInput,
+                            nameError,
+                            data.errors.name[0],
+                        );
                     }
 
                     if (data.errors.email) {
-                        showError(emailInput, emailError, data.errors.email[0]);
+                        showError(
+                            emailInput,
+                            emailError,
+                            data.errors.email[0],
+                        );
                     }
 
                     if (data.errors.password) {
@@ -266,21 +340,27 @@ if (registerForm) {
                 return;
             }
 
-            // -----------------------------
-            // Other errors
-            // -----------------------------
+            // =========================
+            // Other Errors
+            // =========================
 
             if (!response.ok) {
-                showToast(data.message || "Registration failed.", "error");
+                showToast(
+                    data.message || "Registration failed.",
+                    "error",
+                );
 
                 return;
             }
 
-            // -----------------------------
+            // =========================
             // Success
-            // -----------------------------
+            // =========================
 
-            showToast(data.message || "Registration successful!", "success");
+            showToast(
+                data.message || "Registration successful!",
+                "success",
+            );
 
             setTimeout(() => {
                 window.location.href = "/todos";
@@ -288,10 +368,12 @@ if (registerForm) {
         } catch (error) {
             console.error(error);
 
-            showToast("Unable to connect to the server.", "error");
+            showToast(
+                "Unable to connect to the server.",
+                "error",
+            );
         } finally {
             registerButton.disabled = false;
-
             registerButton.textContent = "Register";
         }
     });
